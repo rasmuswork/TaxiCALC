@@ -1,13 +1,14 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using TaxiCALC.Data;
+//all types of taxi data is loaded first
+TaxiData almVogn = new TaxiData(vognType.Almindelig, 37, 12.75m, 5.75m ); 
 
-TaxiData almVogn = new TaxiData(); //slow method but can be in any order.
-almVogn.vognNavn = vognType.Almindelig;
-almVogn.startPris = 37;
-almVogn.Kilometerpris = 12.75;
-almVogn.minutPris = 5.75;
+TaxiData aftenVogn = new TaxiData(vognType.AlmindeligAften, 47m, 16m, 7m); //constructor method
 
+TaxiData storVogn = new TaxiData(vognType.Stor, 77m, 17m, 5.75m);
+
+TaxiData storSpecial = new TaxiData(vognType.StorSpecial, 87m, 19m, 7m);
+
+//TaxiData.km and TaxiData.Minutes should be userdefined as it is undefined decimal fields
 
 
 
@@ -38,3 +39,4 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
