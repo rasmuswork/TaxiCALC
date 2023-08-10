@@ -2,8 +2,159 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Velkommen til TaxiCalc3000</h1>
+@using TaxiCALC.Data
 
-Welcome to your new app.
+<h3>Taxi Estimator</h3>
 
-<h2></h2>
+<div>
+    <label>Select Taxi Type:</label>
+    <select @bind="customerChoices.SelectedVognType">
+        <option value="@vognType.Almindelig">Almindelig</option>
+        <option value="@vognType.AlmindeligAften">Almindelig Aften</option>
+        <option value="@vognType.Stor">Stor</option>
+        <option value="@vognType.StorSpecial">Stor Special</option>
+    </select>
+</div>
+
+<div>
+    <label>Additional Fees:</label>
+    <div>
+
+        <label><input type="checkbox" @bind="customerChoices.TransportAfCykel" /> Transport af cykel</label>
+
+        <label><input type="checkbox" @bind="customerChoices.Opbaering" /> Opbæring</label>
+
+        <label><input type="checkbox" @bind="customerChoices.HjaelpTilOpbaering" /> Hjælp til opbæring</label>
+
+        <label><input type="checkbox" @bind="customerChoices.Lufthavn" /> Lufthavn</label>
+
+        <label><input type="checkbox" @bind="customerChoices.AfhentningILufthavn" /> Afhenting i lufthavn</label>
+
+        <label><input type="checkbox" @bind="customerChoices.FemPersonerEllerOver" /> 5-6 personer</label>
+
+        <label><input type="checkbox" @bind="customerChoices.Liftvogn" /> Liftvogn</label>
+
+        <label><input type="checkbox" @bind="customerChoices.Oeresundsbro" /> Øresundsbro</label>
+
+        <label><input type="checkbox" @bind="customerChoices.Storebaeltsbroen" /> Storebæltsbroen</label>
+
+    </div>
+</div>
+
+<div>
+    <label>Estimated Time (minutes):</label>
+    <input type="number" @bind="customerChoices.EstimatedTime" />
+</div>
+
+<div>
+    <label>Estimated Total Km:</label>
+    <input type="number" @bind="customerChoices.DistanceInKm" />
+</div>
+
+<button @onclick="CalculateTotal">Calculate Total</button>
+
+@if (customerChoices.TotalPris.HasValue)
+{
+    <div>
+        <p>Total Price: @customerChoices.TotalPris</p>
+    </div>
+}
+
+@code {
+    private vognType selectedVognType = vognType.Almindelig;
+
+    public CustomerChoices customerChoices = new CustomerChoices();
+
+    void CalculateTotal()
+    {
+        // Get the TaxiData for the selected taxi type
+        TaxiData taxiData = GetTaxiData(customerChoices.SelectedVognType);
+
+        
+        decimal basePrice = taxiData.startPris;
+        decimal kmPrice = (decimal)taxiData.Kilometerpris;
+        double minutePrice = taxiData.minutPris;
+
+        decimal additionalFees = 0.00m;
+
+        if (customerChoices.TransportAfCykel)
+            additionalFees += customerChoices.CykelTillaeg;
+
+        if (customerChoices.Opbaering)
+            additionalFees += customerChoices.OpbaeringTillaeg;
+
+        if (customerChoices.HjaelpTilOpbaering)
+            additionalFees += customerChoices.HjaelpTilOpbaeringTillaeg;
+
+        if (customerChoices.Lufthavn)
+            additionalFees += customerChoices.LufthavnTillaeg;
+
+        if (customerChoices.AfhentningILufthavn)
+            additionalFees += customerChoices.LufthavnTillaeg;
+
+        if (customerChoices.FemPersonerEllerOver)
+            additionalFees += customerChoices.FemPersonerEllerOverTillaeg;
+
+        if (customerChoices.Liftvogn)
+            additionalFees += customerChoices.LiftvognTillaeg;
+
+        if (customerChoices.Oeresundsbro)
+            additionalFees += customerChoices.OeresundsbroTillaeg;
+
+        if (customerChoices.Storebaeltsbroen)
+            additionalFees += customerChoices.StorebaeltsbroenTillaeg;
+
+        decimal totalPrice = basePrice + (decimal)(kmPrice * customerChoices.DistanceInKm) + (decimal)(minutePrice * customerChoices.EstimatedTime) + additionalFees;
+
+        customerChoices.TotalPris = totalPrice;
+    }
+
+    //keeps track of chosen data and provides the correct values.
+
+    TaxiData GetTaxiData(vognType selectedVognType)
+    {
+
+
+        if (selectedVognType == vognType.Almindelig)
+        {
+            return new TaxiData
+            {
+                startPris = 37.00m,
+                Kilometerpris = 12.75,
+                minutPris = 5.75
+            };
+        }
+        else if (selectedVognType == vognType.AlmindeligAften)
+        {
+            return new TaxiData
+            {
+                startPris = 47.00m,
+                Kilometerpris = 16.00,
+                minutPris = 7.00
+            };
+        }
+        else if (selectedVognType == vognType.Stor)
+        {
+            return new TaxiData
+            {
+                startPris = 77.00m,
+                Kilometerpris = 17.00,
+                minutPris = 5.75
+            };
+        }
+        else if (selectedVognType == vognType.StorSpecial)
+        {
+            return new TaxiData
+            {
+                startPris = 87.00m,
+                Kilometerpris = 19.00,
+                minutPris = 7.00
+            };
+        }
+
+        return null;
+    }
+
+}
+
+
