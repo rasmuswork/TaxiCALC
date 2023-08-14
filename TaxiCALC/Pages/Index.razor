@@ -2,7 +2,10 @@
 
 <PageTitle>Index</PageTitle>
 
+
+
 @using TaxiCALC.Data
+
 
 <h3>Taxi Estimator</h3>
 
@@ -18,27 +21,16 @@
 
 <div>
     <label>Additional Fees:</label>
-    <div>
-
-        <label><input type="checkbox" @bind="customerChoices.TransportAfCykel" /> Transport af cykel</label>
-
-        <label><input type="checkbox" @bind="customerChoices.Opbaering" /> Opbæring</label>
-
-        <label><input type="checkbox" @bind="customerChoices.HjaelpTilOpbaering" /> Hjælp til opbæring</label>
-
-        <label><input type="checkbox" @bind="customerChoices.Lufthavn" /> Lufthavn</label>
-
-        <label><input type="checkbox" @bind="customerChoices.AfhentningILufthavn" /> Afhenting i lufthavn</label>
-
-        <label><input type="checkbox" @bind="customerChoices.FemPersonerEllerOver" /> 5-6 personer</label>
-
-        <label><input type="checkbox" @bind="customerChoices.Liftvogn" /> Liftvogn</label>
-
-        <label><input type="checkbox" @bind="customerChoices.Oeresundsbro" /> Øresundsbro</label>
-
-        <label><input type="checkbox" @bind="customerChoices.Storebaeltsbroen" /> Storebæltsbroen</label>
-
-    </div>
+    <ul>
+        <li><input type="checkbox" @bind="customerChoices.TransportAfCykel" /> Transport af cykel</li>
+        <li><input type="checkbox" @bind="customerChoices.Opbaering" /> Opbæring</li>
+        <li><input type="checkbox" @bind="customerChoices.Lufthavn" /> Lufthavn</li>
+        <li><input type="checkbox" @bind="customerChoices.AfhentningILufthavn" /> Afhenting i lufthavn</li>
+        <li><input type="checkbox" @bind="customerChoices.FemPersonerEllerOver" /> 5-6 personer</li>
+        <li><input type="checkbox" @bind="customerChoices.Liftvogn" /> Liftvogn</li>
+        <li><input type="checkbox" @bind="customerChoices.Oeresundsbro" /> Øresundsbro</li>
+        <li><input type="checkbox" @bind="customerChoices.Storebaeltsbroen" /> Storebæltsbroen</li>
+    </ul>
 </div>
 
 <div>
@@ -53,6 +45,12 @@
 
 <button @onclick="CalculateTotal">Calculate Total</button>
 
+
+
+<div>
+    <iframe width="800" height="600" src="https://www.openstreetmap.org/export/embed.html?bbox=12.552180290222168%2C56.00450020600001%2C12.6513147354126%2C56.035681326484394&amp;layer=mapnik" style="border: 1px solid black"></iframe><br /><small><a href="https://www.openstreetmap.org/#map=15/56.0201/12.6017">View Larger Map</a></small>
+</div>
+
 @if (customerChoices.TotalPris.HasValue)
 {
     <div>
@@ -60,17 +58,21 @@
     </div>
 }
 
+
+
+
+
 @code {
-    private vognType selectedVognType = vognType.Almindelig;
+    private vognType selectedVognType = vognType.Almindelig; //the default vogntype
 
-    public CustomerChoices customerChoices = new CustomerChoices();
+    public CustomerChoices customerChoices = new CustomerChoices(); //creates a new customer choices ready for input
 
-    void CalculateTotal()
+    void CalculateTotal() //a method that is used to calculate the total price on call
     {
         // Get the TaxiData for the selected taxi type
         TaxiData taxiData = GetTaxiData(customerChoices.SelectedVognType);
 
-        
+
         decimal basePrice = taxiData.startPris;
         decimal kmPrice = (decimal)taxiData.Kilometerpris;
         double minutePrice = taxiData.minutPris;
@@ -82,9 +84,6 @@
 
         if (customerChoices.Opbaering)
             additionalFees += customerChoices.OpbaeringTillaeg;
-
-        if (customerChoices.HjaelpTilOpbaering)
-            additionalFees += customerChoices.HjaelpTilOpbaeringTillaeg;
 
         if (customerChoices.Lufthavn)
             additionalFees += customerChoices.LufthavnTillaeg;

@@ -3,11 +3,6 @@ using Microsoft.AspNetCore.Components.Web;
 using TaxiCALC.Data;
 
 
-TaxiData almVogn = new TaxiData(); //slow method but can be in any order.
-almVogn.vognNavn = vognType.Almindelig;
-almVogn.startPris = 37;
-almVogn.Kilometerpris = 12.75;
-almVogn.minutPris = 5.75;
 
 
 
